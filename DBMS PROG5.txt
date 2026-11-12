@@ -1,0 +1,29 @@
+DELIMITER //
+CREATE PROCEDURE emp_cursor_demo1()
+BEGIN
+-- Declare variables
+DECLARE v_id INT;
+DECLARE v_name VARCHAR(50);
+DECLARE v_age INT;
+DECLARE v_salary INT;
+DECLARE done INT DEFAULT 0;
+-- Declare cursor
+DECLARE emp_cursor CURSOR FOR
+SELECT E_ID, E_NAME, AGE, SALARY FROM EMPLOYEE;
+-- Handler for end of data
+DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
+-- Open cursor
+OPEN emp_cursor;
+read_loop: LOOP
+-- Fetch data
+FETCH emp_cursor INTO v_id, v_name, v_age, v_salary;
+IF done THEN
+LEAVE read_loop;
+END IF;
+-- Display values
+SELECT v_id AS ID, v_name AS NAME, v_age AS AGE, v_salary AS SALARY;
+END LOOP;
+-- Close cursor
+CLOSE emp_cursor;
+END //
+DELIMITER;
